@@ -1,0 +1,58 @@
+1. criando namespace
+    1.1 kubectl create ns labworpress
+    1.2 kubectl get ns
+    1.3 kubectl -n labnginx nome_do_comando
+
+2. criando arquivo secrets
+    2.1 kubectl 
+
+3. criando service mysql 
+    2.1 criar arquivo db-service.yaml
+    //////////////////////////////////////
+    apiVersion: v1
+    kind: Service
+    metadata:
+    name: wordpress-mysql
+    namespace: labwordpress
+    labels:
+        app: wordpress
+    spec:
+    ports:
+        - port: 3308
+    selector:
+        app: wordpress
+        tier: mysql
+    clusterIP: None
+    //////////////////////////////////////
+    2.2 kubectl -n labwordpress apply - f db-service.yaml
+
+3. criando service 
+    3.1 criar arquivo nginx-service.yaml
+    /////////////////////////
+    /////////////////////////
+    3.2 kubectl apply -f nginx-service.yaml
+
+4. abra no navegador a pagina do nginx
+    4.1 verificar ip no linux: kubectl get nodes -o wide
+    4.2 verificar nodePort: kubectl get svc nome_servico
+    4.2 ip:nodePort para acessar página
+
+5. verificar describe dos pods
+    5.1 kubectl describe pod nome_pod_1: verificar ip
+    5.2 kubectl describe pod nome_pod_2: verificar ip
+
+6. verificar logs dos pods
+    6.1 verificar separadamente
+        kubectl logs -f nome_pod_1
+        kubectl logs -f nome_pod_2
+    6.2 verificar logs do namespace
+        kubectl -n labnginx logs -lapp=nginx --all-containers=true
+
+Acessar mysql
+kubectl -n labwordpress -it nome_do_pod -- bash
+mysql -u root -p
+senha
+show databases;
+
+kubectl -n labwordpres exec -it --container nome_do_container -- bash
+

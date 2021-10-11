@@ -1,0 +1,92 @@
+1. criando namespace
+    1.1 kubectl create ns labnginx
+    1.2 kubectl get ns
+    1.3 kubectl -n labnginx nome_do_comando
+
+2. criando dois pods
+    2.1 criar arquivo nginx-deploy.yaml
+    //////////////////////////////
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+        name: nginx-deployment
+        spec:
+        selector:
+            matchLabels:
+            app: nginx
+        replicas: 2 
+        template:
+            metadata:
+            labels:
+                app: nginx
+            spec:
+            containers:
+            - name: nginx
+                image: nginx:latest
+                ports:
+                - containerPort: 80
+    //////////////////////////////////////
+    2.2 kubectl apply - f nginx-deploy.yaml
+
+3. criando service 
+    3.1 criar arquivo nginx-service.yaml
+    /////////////////////////
+    apiVersion: v1
+    kind: Service
+    metadata:
+    name: nginx-service
+    spec:
+    selector:
+        app: nginx
+    ports:
+    - port: 80
+    /////////////////////////
+    3.2 kubectl apply -f nginservice.yaml
+
+4. modificar consiguracoes
+minikube addons list
+minkube addons enable ingress
+cd /etc 
+sudo vim hosts 
+192.168.99.100 compasso-nginx.com 
+
+criar nginx-ingress.yaml
+////////////////////////
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+    name: nginx-ingress
+    namespace: labnginx
+    annotations:
+        kubernetes.io/ingress.class: "nginx"
+    spec:
+        defaultBackend: 
+            service: 
+            name: nginx-service
+            port:
+                number: 80
+        rules:
+            - host: compasso-nginx.com
+            http:
+                paths:
+                - path: /
+                pathType: Prefix
+                backend:
+                    service:
+                    name: nginx-service
+                    port:
+                        number: 80
+
+5. abra no navegador a pagina do nginx
+    5.1 acessa pagina compasso-nginx.com
+
+6. verificar describe dos pods
+    6.1 kubectl describe pod nome_pod_1: verificar ip
+    6.2 kubectl describe pod nome_pod_2: verificar ip
+
+7. verificar logs dos pods
+    7.1 verificar separadamente
+        kubectl logs -f nome_pod_1
+        kubectl logs -f nome_pod_2
+    7.2 verificar logs do namespace
+        kubectl -n labnginx logs -lapp=nginx --all-containers=true

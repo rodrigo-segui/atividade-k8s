@@ -6,88 +6,31 @@
 
 2. criando dois pods
     2.1 criar arquivo nginx-deploy.yaml
-    //////////////////////////////
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-        name: nginx-deployment
-        spec:
-        selector:
-            matchLabels:
-            app: nginx
-        replicas: 2 
-        template:
-            metadata:
-            labels:
-                app: nginx
-            spec:
-            containers:
-            - name: nginx
-                image: nginx:latest
-                ports:
-                - containerPort: 80
-    //////////////////////////////////////
-    2.2 kubectl apply - f nginx-deploy.yaml
+    2.2 kubectl -n labnginx apply - f nginx-deploy.yaml
 
 3. criando service 
     3.1 criar arquivo nginx-service.yaml
-    /////////////////////////
-    apiVersion: v1
-    kind: Service
-    metadata:
-    name: nginx-service
-    spec:
-    selector:
-        app: nginx
-    ports:
-    - port: 80
-    /////////////////////////
-    3.2 kubectl apply -f nginservice.yaml
+    3.2 kubectl -n labnginx apply -f nginx-service.yaml
 
-4. modificar consiguracoes
-minikube addons list
-minkube addons enable ingress
-cd /etc 
-sudo vim hosts 
-192.168.99.100 compasso-nginx.com 
-
-criar nginx-ingress.yaml
-////////////////////////
-    apiVersion: networking.k8s.io/v1
-    kind: Ingress
-    metadata:
-    name: nginx-ingress
-    namespace: labnginx
-    annotations:
-        kubernetes.io/ingress.class: "nginx"
-    spec:
-        defaultBackend: 
-            service: 
-            name: nginx-service
-            port:
-                number: 80
-        rules:
-            - host: compasso-nginx.com
-            http:
-                paths:
-                - path: /
-                pathType: Prefix
-                backend:
-                    service:
-                    name: nginx-service
-                    port:
-                        number: 80
+4. configurar ingress
+    4.1 minikube addons list
+    4.2 minkube addons enable ingress
+    4.3 cd /etc 
+    4.4 sudo vim hosts 
+    4.5 192.168.99.100 compasso-nginx.com 
+    4.5 kubectl -n labnginx apply -f ngix-ingress.yaml
+    4.6 criar nginx-ingress.yaml
 
 5. abra no navegador a pagina do nginx
     5.1 acessa pagina compasso-nginx.com
 
 6. verificar describe dos pods
-    6.1 kubectl describe pod nome_pod_1: verificar ip
-    6.2 kubectl describe pod nome_pod_2: verificar ip
+    6.1 kubectl -n labnginx describe pod nome_pod_1: verificar ip
+    6.2 kubectl -n labnginx describe pod nome_pod_2: verificar ip
 
 7. verificar logs dos pods
     7.1 verificar separadamente
-        kubectl logs -f nome_pod_1
-        kubectl logs -f nome_pod_2
+        kubectl -n labnginx logs -f nome_pod_1
+        kubectl -n labnginx logs -f nome_pod_2
     7.2 verificar logs do namespace
         kubectl -n labnginx logs -lapp=nginx --all-containers=true

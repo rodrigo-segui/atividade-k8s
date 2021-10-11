@@ -5,7 +5,7 @@ atividade de kubernets estágio DevSecOps &amp; Cloud
     <img alt="atividade-k8s" title="#delicinha" />
 </h1>
 
-# piano-music
+# atividade-k8s
 
 
 <p align="center">
@@ -40,7 +40,7 @@ Dica: Verifique qual o ingress que foi gerado no kubernetes, se atente de locali
 
 Resposta: https://github.com/Rodrigo-Segui/atividade-k8s/blob/main/atividade1/atividade1.txt
   
- ## :memo: Licença
+
 Atividade 2 – wordpress no k8s
 
 Material de apoio: https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/ 
